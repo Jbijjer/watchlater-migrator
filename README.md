@@ -148,6 +148,7 @@ tqdm
 requests
 google-auth-oauthlib
 google-api-python-client
+secretstorage
 ```
 
 ---
