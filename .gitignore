@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Secrets — never commit these
+client_secrets.json
+*.json.bak
+
+# Generated data — user-specific, keep out of repo
+watch_later_public.csv
+watch_later_private.csv
+enriched.json
+keepers.json
+
+# OS
+.DS_Store
+Thumbs.db
