@@ -76,8 +76,6 @@ python3 2_enrich_metadata.py --api-key YOUR_API_KEY
 
 **Output:** `enriched.json` — all videos with channel, publish date, duration, and tags.
 
-> ⚠️ **Rotate your API key after use** — never commit it to git.
-
 ---
 
 ## Step 3 — Triage
