@@ -37,7 +37,7 @@ Writing to regular playlists, however, works fine via the API (step 4).
 ## Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/watchlater-migrator.git
+git clone https://github.com/jbijjer/watchlater-migrator.git
 cd watchlater-migrator
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
