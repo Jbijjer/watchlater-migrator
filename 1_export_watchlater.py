@@ -15,10 +15,9 @@ Output:
     watch_later_private.csv  — private/deleted videos
 """
 
-import os
 import sys
 import csv
-from typing import Optional, Tuple, List
+from typing import Optional
 
 import yt_dlp
 from tqdm import tqdm
@@ -26,8 +25,7 @@ from tqdm import tqdm
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
-BROWSER = "firefox"          # "firefox" or "chrome"
-PROFILE_PATH = None          # Optional: path to a non-default browser profile
+SUPPORTED_BROWSERS = ["firefox", "chrome"]
 OUTPUT_PUBLIC  = "watch_later_public.csv"
 OUTPUT_PRIVATE = "watch_later_private.csv"
 PLAYLIST_URL   = "https://www.youtube.com/playlist?list=WL"
@@ -41,7 +39,21 @@ class _QuietLogger:
     def error(self, msg): print(msg, file=sys.stderr)
 
 
-def _fetch_flat(browser: str, profile_path: Optional[str]):
+def _ask_browser() -> str:
+    """Prompt the user to choose a browser interactively."""
+    print("Which browser are you logged into YouTube with?")
+    for i, b in enumerate(SUPPORTED_BROWSERS, 1):
+        print(f"  {i}) {b.capitalize()}")
+    while True:
+        choice = input("Enter number or name: ").strip().lower()
+        if choice in SUPPORTED_BROWSERS:
+            return choice
+        if choice.isdigit() and 1 <= int(choice) <= len(SUPPORTED_BROWSERS):
+            return SUPPORTED_BROWSERS[int(choice) - 1]
+        print(f"Invalid choice. Please enter one of: {', '.join(SUPPORTED_BROWSERS)}")
+
+
+def _fetch_flat(browser: str, profile_path: Optional[str] = None):
     cookies_arg = (browser, profile_path) if profile_path else (browser,)
     opts = {
         "cookiesfrombrowser": cookies_arg,
@@ -77,17 +89,12 @@ def _write_csv(path: str, videos: list):
 # ── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
-    supported = ["firefox", "chrome"]
-    if BROWSER not in supported:
-        print(f"ERROR: BROWSER must be one of {supported}", file=sys.stderr)
-        sys.exit(1)
-
-    print(f"Fetching Watch Later using {BROWSER.capitalize()} cookies...")
-    if PROFILE_PATH:
-        print(f"Profile: {PROFILE_PATH}")
+    browser = _ask_browser()
+    print(f"\nFetching Watch Later using {browser.capitalize()} cookies...")
+    print("Make sure your browser is fully closed before continuing.\n")
 
     try:
-        public, private = _fetch_flat(BROWSER, PROFILE_PATH)
+        public, private = _fetch_flat(browser)
     except yt_dlp.utils.DownloadError as e:
         print(f"\n❌ yt-dlp error: {e}", file=sys.stderr)
         print("Make sure your browser is closed and you are logged into YouTube.", file=sys.stderr)
